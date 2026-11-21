@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
   <title>Nagisa | Bio</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
@@ -11,7 +12,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: url('https://i.pinimg.com/736x/2f/68/0f/2f680f41b4840b65f6d9f12dcf386f48.jpg') center/cover no-repeat fixed;
+      background-color: #0f172a;
+      background-image: url('https://i.pinimg.com/736x/2f/68/0f/2f680f41b4840b65f6d9f12dcf386f48.jpg');
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
       color: #fff;
       padding: 20px;
     }
@@ -28,12 +34,13 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
     .avatar {
-      width: 100px;
-      height: 100px;
+      display: block;
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 14px;
       border-radius: 50%;
       object-fit: cover;
       border: 3px solid rgba(255, 255, 255, 0.6);
-      margin-bottom: 14px;
     }
     h1 { font-size: 1.5rem; margin-bottom: 6px; }
     .bio { font-size: 0.9rem; color: #d1d5db; margin-bottom: 24px; }
@@ -57,7 +64,7 @@
 </head>
 <body>
   <div class="card">
-    <img src="https://i.pinimg.com/736x/e8/34/af/e834afd04cdcf498637487391b932c33.jpg" alt="Avatar" class="avatar">
+    <img src="https://i.pinimg.com/736x/e8/34/af/e834afd04cdcf498637487391b932c33.jpg" referrerpolicy="no-referrer" alt="Avatar" class="avatar">
     <h1>Nagisa</h1>
     <p class="bio">Mô tả ngắn về bạn ở đây ✨</p>
 
