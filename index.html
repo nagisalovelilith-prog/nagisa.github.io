@@ -5,8 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="no-referrer">
   <title>Nagisa | Bio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
     body {
       min-height: 100vh;
       display: flex;
@@ -17,6 +24,8 @@
       padding: 20px;
       overflow-x: hidden;
     }
+
+    /* Video nền tối ưu GPU chống lag */
     .bg-video {
       position: fixed;
       top: 0;
@@ -25,19 +34,21 @@
       height: 100%;
       object-fit: cover;
       z-index: -1;
+      transform: translateZ(0);
     }
+
+    /* Khung Bio (đã bỏ blur để video chạy mượt) */
     .card {
       width: 100%;
       max-width: 400px;
-      background: rgba(20, 20, 30, 0.55);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(15, 15, 25, 0.72);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 24px;
       padding: 32px 24px;
       text-align: center;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
     }
+
     .avatar {
       display: block;
       width: 110px;
@@ -47,23 +58,73 @@
       object-fit: cover;
       border: 3px solid rgba(255, 255, 255, 0.6);
     }
-    h1 { font-size: 1.5rem; margin-bottom: 6px; }
-    .bio { font-size: 0.9rem; color: #d1d5db; margin-bottom: 24px; }
-    .links { display: flex; flex-direction: column; gap: 12px; }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+    }
+
+    .bio {
+      font-size: 0.9rem;
+      color: #d1d5db;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Kiểu nút chung */
     .btn {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       padding: 13px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 14px;
-      color: #fff;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 600;
       transition: 0.25s;
     }
+
     .btn:hover {
-      background: rgba(255, 255, 255, 0.25);
       transform: translateY(-2px);
+      filter: brightness(1.2);
+    }
+
+    /* Màu từng nút */
+    .btn-tiktok {
+      color: #ff3b6b;
+      background: rgba(255, 59, 107, 0.16);
+      border: 1.5px solid #ff3b6b;
+    }
+
+    .btn-discord {
+      color: #7c8cff;
+      background: rgba(88, 101, 242, 0.18);
+      border: 1.5px solid #6b7cff;
+    }
+
+    .btn-purple {
+      color: #d946ef;
+      background: rgba(217, 70, 239, 0.16);
+      border: 1.5px solid #d946ef;
+    }
+
+    /* Màu dự phòng (cam, xanh ngọc) nếu sau này thêm nút */
+    .btn-orange {
+      color: #f59e0b;
+      background: rgba(245, 158, 11, 0.16);
+      border: 1.5px solid #f59e0b;
+    }
+
+    .btn-cyan {
+      color: #2dd4bf;
+      background: rgba(45, 212, 191, 0.16);
+      border: 1.5px solid #2dd4bf;
     }
   </style>
 </head>
@@ -74,14 +135,19 @@
 
   <div class="card">
     <img src="https://i.pinimg.com/736x/e8/34/af/e834afd04cdcf498637487391b932c33.jpg" referrerpolicy="no-referrer" alt="Avatar" class="avatar">
-    <h1>Nagisa❄️</h1>
+    <h1>Nagisa</h1>
     <p class="bio">Mình là Nagisa. Đây là góc của mình. Cảm ơn bạn đã ghé qua ✨</p>
 
     <div class="links">
-      <a href="https://facebook.com" target="_blank" class="btn">Facebook</a>
-      <a href="https://tiktok.com" target="_blank" class="btn">TikTok</a>
-      <a href="https://discord.com" target="_blank" class="btn">Discord</a>
-      <a href="https://instagram.com" target="_blank" class="btn">Instagram</a>
+      <a href="https://www.tiktok.com/@id-cua-ban" target="_blank" class="btn btn-tiktok">
+        <i class="fa-brands fa-tiktok"></i> Ghé thăm kênh TikTok
+      </a>
+      <a href="https://discord.com/users/ID-CUA-BAN" target="_blank" class="btn btn-discord">
+        <i class="fa-brands fa-discord"></i> Profile Discord
+      </a>
+      <a href="https://discord.gg/link-server-cua-ban" target="_blank" class="btn btn-purple">
+        <i class="fa-solid fa-server"></i> 🌸 ┊ Jinzhou Garden
+      </a>
     </div>
   </div>
 </body>
