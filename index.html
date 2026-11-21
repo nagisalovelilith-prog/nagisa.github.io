@@ -7,11 +7,19 @@
   <title>Nagisa | Bio</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
+    /* Bảng màu mặc định: Mùa Hạ (Xanh nước biển) */
+    :root {
+      --accent: #38bdf8;
+      --accent-dark: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.45);
+      --accent-soft: rgba(56, 189, 248, 0.14);
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
     body {
@@ -19,74 +27,246 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #0f172a;
+      background-color: #0b1120;
       color: #fff;
-      padding: 20px;
+      padding: 24px 16px;
       overflow-x: hidden;
     }
 
     /* Video nền tối ưu GPU chống lag */
     .bg-video {
       position: fixed;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      z-index: -1;
+      z-index: -2;
       transform: translateZ(0);
     }
 
-    /* Khung Bio (đã bỏ blur để video chạy mượt) */
-    .card {
+    /* Canvas hiệu ứng hoa Nemophila rơi */
+    #nemophila-canvas {
+      position: fixed;
+      inset: 0;
       width: 100%;
-      max-width: 400px;
-      background: rgba(15, 15, 25, 0.72);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 24px;
-      padding: 32px 24px;
-      text-align: center;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
     }
 
+    /* Màn hình chờ để mở khóa tự động phát nhạc */
+    .enter-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 12, 24, 0.88);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      z-index: 999;
+      cursor: pointer;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
+    }
+
+    .enter-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .enter-box {
+      padding: 16px 32px;
+      border-radius: 999px;
+      border: 1.5px solid var(--accent);
+      background: var(--accent-soft);
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 24px var(--accent-glow);
+      animation: pulse 1.8s infinite;
+    }
+
+    .enter-sub {
+      font-size: 0.82rem;
+      color: #cbd5e1;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    /* Khung Bio chính */
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      background: rgba(13, 18, 30, 0.78);
+      border: 2px solid var(--accent);
+      border-radius: 26px;
+      padding: 22px 22px 26px;
+      text-align: center;
+      box-shadow: 0 0 28px var(--accent-glow), 0 12px 36px rgba(0, 0, 0, 0.55);
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+      z-index: 2;
+    }
+
+    /* Thanh trên cùng: Đồng hồ & Nút đổi 4 mùa */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .clock-box {
+      text-align: left;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 6px 12px;
+      border-radius: 12px;
+    }
+
+    .clock-time {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      transition: color 0.4s ease;
+    }
+
+    .clock-date {
+      font-size: 0.72rem;
+      color: #cbd5e1;
+      margin-top: 1px;
+    }
+
+    .season-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: 1.5px solid var(--accent);
+      background: var(--accent-soft);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.25s;
+      white-space: nowrap;
+    }
+
+    .season-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    /* Avatar & Thông tin cá nhân */
     .avatar {
       display: block;
-      width: 110px;
-      height: 110px;
-      margin: 0 auto 14px;
+      width: 108px;
+      height: 108px;
+      margin: 0 auto 12px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid rgba(255, 255, 255, 0.6);
+      border: 3px solid var(--accent);
+      box-shadow: 0 0 20px var(--accent-glow);
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
     }
 
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.55rem;
       margin-bottom: 6px;
+      font-weight: 700;
     }
 
     .bio {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: #d1d5db;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       line-height: 1.5;
     }
 
-    .links {
+    /* Tiêu đề từng khu vực */
+    .section-title {
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin: 18px 0 10px;
+      text-align: left;
+    }
+
+    /* Khu vực Game yêu thích */
+    .games-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
 
-    /* Kiểu nút chung */
+    .game-card {
+      background: rgba(20, 29, 46, 0.85);
+      border: 1.5px solid var(--accent);
+      border-radius: 16px;
+      padding: 14px 10px;
+      cursor: pointer;
+      transition: 0.25s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .game-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 18px var(--accent-glow);
+    }
+
+    .game-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 2px;
+    }
+
+    .game-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .game-sub {
+      font-size: 0.72rem;
+      color: #cbd5e1;
+    }
+
+    /* Khu vực Liên kết */
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .btn {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      padding: 13px;
+      padding: 12px;
       border-radius: 14px;
       text-decoration: none;
       font-weight: 600;
+      font-size: 0.92rem;
       transition: 0.25s;
     }
 
@@ -95,7 +275,6 @@
       filter: brightness(1.2);
     }
 
-    /* Màu từng nút */
     .btn-tiktok {
       color: #ff3b6b;
       background: rgba(255, 59, 107, 0.16);
@@ -114,41 +293,672 @@
       border: 1.5px solid #d946ef;
     }
 
-    /* Màu dự phòng (cam, xanh ngọc) nếu sau này thêm nút */
-    .btn-orange {
-      color: #f59e0b;
-      background: rgba(245, 158, 11, 0.16);
-      border: 1.5px solid #f59e0b;
+    /* Trình phát nhạc (tông xanh nước biển cố định theo yêu cầu) */
+    .music-player {
+      margin-top: 18px;
+      background: rgba(14, 22, 36, 0.9);
+      border: 1.5px solid #38bdf8;
+      border-radius: 18px;
+      padding: 12px 14px;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
     }
 
-    .btn-cyan {
-      color: #2dd4bf;
-      background: rgba(45, 212, 191, 0.16);
-      border: 1.5px solid #2dd4bf;
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .time-text {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      min-width: 34px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+      border-radius: 999px;
+    }
+
+    .player-body {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .track-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      text-align: left;
+    }
+
+    .disc-art {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #38bdf8;
+      flex-shrink: 0;
+      animation: spin 10s linear infinite;
+      animation-play-state: paused;
+    }
+
+    .disc-art.playing {
+      animation-play-state: running;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .track-info {
+      min-width: 0;
+    }
+
+    .track-title-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .track-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 140px;
+    }
+
+    .eq-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 12px;
+    }
+
+    .eq-bars span {
+      width: 2.5px;
+      height: 4px;
+      background: #38bdf8;
+      border-radius: 2px;
+    }
+
+    .eq-bars.playing span:nth-child(1) { animation: eq 0.6s infinite ease-in-out; }
+    .eq-bars.playing span:nth-child(2) { animation: eq 0.8s infinite ease-in-out 0.2s; }
+    .eq-bars.playing span:nth-child(3) { animation: eq 0.5s infinite ease-in-out 0.1s; }
+
+    @keyframes eq {
+      0%, 100% { height: 4px; }
+      50% { height: 12px; }
+    }
+
+    .track-artist {
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+
+    .track-lyric {
+      font-size: 0.7rem;
+      color: #38bdf8;
+      font-style: italic;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 145px;
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .vol-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .vol-icon {
+      color: #38bdf8;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .vol-slider {
+      width: 46px;
+      accent-color: #38bdf8;
+      cursor: pointer;
+    }
+
+    .ctrl-btn {
+      background: none;
+      border: none;
+      color: #38bdf8;
+      font-size: 0.9rem;
+      cursor: pointer;
+      padding: 4px;
+      transition: 0.2s;
+    }
+
+    .ctrl-btn:hover {
+      color: #7dd3fc;
+      transform: scale(1.1);
+    }
+
+    .play-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #38bdf8, #0284c7);
+      color: #fff;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.55);
+      transition: 0.2s;
+    }
+
+    .play-btn:hover {
+      transform: scale(1.08);
+    }
+
+    /* Hộp thoại hiện UID & Ingame */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 10, 20, 0.78);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 500;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 340px;
+      background: #111827;
+      border: 1.5px solid var(--accent);
+      border-radius: 20px;
+      padding: 22px 20px;
+      text-align: center;
+      box-shadow: 0 0 28px var(--accent-glow);
+      position: relative;
+      animation: popIn 0.22s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.15rem;
+      cursor: pointer;
+    }
+
+    .modal-close:hover { color: #fff; }
+
+    .modal-img {
+      width: 66px;
+      height: 66px;
+      border-radius: 16px;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 10px 14px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+
+    .info-label { color: #94a3b8; }
+    .info-val { font-weight: 700; color: #fff; }
+
+    .copy-btn {
+      width: 100%;
+      margin-top: 4px;
+      padding: 10px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .copy-btn:hover { filter: brightness(1.12); }
+
+    @media (max-width: 400px) {
+      .vol-wrap { display: none; }
+      .track-title { max-width: 115px; }
     }
   </style>
 </head>
 <body>
+  <!-- Video nền -->
   <video class="bg-video" autoplay muted loop playsinline poster="https://i.pinimg.com/736x/2f/68/0f/2f680f41b4840b65f6d9f12dcf386f48.jpg">
     <source src="YTSave.to_YouTube_Media_ExEyb-BaFyo_Qingxiao-entrance-cutscene-Full-HD-60FPS-Wuthering-waves-3-5_002_720p%20(online-video-cutter.com).mp4" type="video/mp4">
   </video>
 
+  <!-- Canvas hoa Nemophila rơi -->
+  <canvas id="nemophila-canvas"></canvas>
+
+  <!-- Màn hình chạm để mở nhạc -->
+  <div class="enter-overlay" id="enterOverlay">
+    <div class="enter-box">✨ Chạm để tiếp tục ✨</div>
+    <div class="enter-sub">Nhấn bất kỳ đâu để vào trang & phát nhạc</div>
+  </div>
+
+  <!-- Khung Bio chính -->
   <div class="card">
+    <!-- Đồng hồ + Nút đổi 4 mùa -->
+    <div class="top-bar">
+      <div class="clock-box">
+        <div class="clock-time" id="clockTime">00:00:00</div>
+        <div class="clock-date" id="clockDate">Đang tải lịch...</div>
+      </div>
+      <button class="season-btn" id="seasonBtn" title="Đổi màu 4 mùa">
+        <span id="seasonIcon">🌊</span>
+        <span id="seasonName">Hạ</span>
+      </button>
+    </div>
+
+    <!-- Avatar & Bio -->
     <img src="https://i.pinimg.com/736x/e8/34/af/e834afd04cdcf498637487391b932c33.jpg" referrerpolicy="no-referrer" alt="Avatar" class="avatar">
     <h1>Nagisa</h1>
     <p class="bio">Mình là Nagisa. Đây là góc của mình. Cảm ơn bạn đã ghé qua ✨</p>
 
+    <!-- Game yêu thích -->
+    <div class="section-title"><i class="fa-solid fa-gamepad"></i> Game yêu thích</div>
+    <div class="games-grid">
+      <div class="game-card" onclick="openGameModal('wuwa')">
+        <img src="wuwa.jpg" alt="Wuthering Waves" class="game-icon">
+        <div class="game-name">Wuthering Waves</div>
+        <div class="game-sub">Xem UID & Ingame ▶</div>
+      </div>
+      <div class="game-card" onclick="openGameModal('gi')">
+        <img src="gi.jpg" alt="Genshin Impact" class="game-icon">
+        <div class="game-name">Genshin Impact</div>
+        <div class="game-sub">Xem UID & Ingame ▶</div>
+      </div>
+    </div>
+
+    <!-- Liên kết (NHỚ THAY 3 LINK CỦA BẠN Ở ĐÂY) -->
+    <div class="section-title"><i class="fa-solid fa-link"></i> Liên kết</div>
     <div class="links">
-      <a href="https://www.tiktok.com/@nagisa_.201" target="_blank" class="btn btn-tiktok">
+      <a href="https://www.tiktok.com/@id-cua-ban" target="_blank" class="btn btn-tiktok">
         <i class="fa-brands fa-tiktok"></i> Ghé thăm kênh TikTok
       </a>
-      <a href="https://discord.com/users/zhuanfangyi_." target="_blank" class="btn btn-discord">
+      <a href="https://discord.com/users/ID-DISCORD-CUA-BAN" target="_blank" class="btn btn-discord">
         <i class="fa-brands fa-discord"></i> Profile Discord
       </a>
-      <a href="https://discord.gg/kUTtRzUHZ" target="_blank" class="btn btn-purple">
+      <a href="https://discord.gg/link-server-cua-ban" target="_blank" class="btn btn-purple">
         <i class="fa-solid fa-server"></i> ୨୧ 𝐌𝐨𝐨𝐧𝐥𝐢𝐭 𝐇𝐚𝐯𝐞𝐧 ୨୧
       </a>
     </div>
+
+    <!-- Trình phát nhạc -->
+    <div class="music-player">
+      <div class="progress-row">
+        <span class="time-text" id="currentTime">00:00</span>
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <span class="time-text" id="durationTime">00:00</span>
+      </div>
+
+      <div class="player-body">
+        <div class="track-left">
+          <img src="https://i.pinimg.com/736x/e8/34/af/e834afd04cdcf498637487391b932c33.jpg" referrerpolicy="no-referrer" alt="Cover" class="disc-art" id="discArt">
+          <div class="track-info">
+            <div class="track-title-row">
+              <span class="track-title">Có hẹn với thanh xuân</span>
+              <div class="eq-bars" id="eqBars">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+            <div class="track-artist">MONSTAR</div>
+            <div class="track-lyric">♫ Ta đã có hẹn với thanh xuân...</div>
+          </div>
+        </div>
+
+        <div class="player-controls">
+          <div class="vol-wrap">
+            <i class="fa-solid fa-volume-high vol-icon" id="volIcon"></i>
+            <input type="range" class="vol-slider" id="volSlider" min="0" max="1" step="0.05" value="0.7">
+          </div>
+          <button class="ctrl-btn" id="rewindBtn" title="Phát lại từ đầu">
+            <i class="fa-solid fa-backward-step"></i>
+          </button>
+          <button class="play-btn" id="playBtn" title="Phát / Tạm dừng">
+            <i class="fa-solid fa-play" id="playIcon"></i>
+          </button>
+          <button class="ctrl-btn" id="forwardBtn" title="Tua nhanh 10 giây">
+            <i class="fa-solid fa-forward-step"></i>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Hộp thoại hiển thị thông tin Game -->
+  <div class="modal-backdrop" id="gameModal" onclick="closeModalOutside(event)">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeGameModal()"><i class="fa-solid fa-xmark"></i></button>
+      <img src="" alt="Game" class="modal-img" id="modalImg">
+      <div class="modal-title" id="modalTitle">Tên Game</div>
+      <div class="info-row">
+        <span class="info-label">Ingame</span>
+        <span class="info-val" id="modalIngame"></span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">UID</span>
+        <span class="info-val" id="modalUid"></span>
+      </div>
+      <button class="copy-btn" id="copyUidBtn" onclick="copyUid()">
+        <i class="fa-regular fa-copy"></i> Sao chép UID
+      </button>
+    </div>
+  </div>
+
+  <!-- File nhạc -->
+  <audio id="bgMusic" src="cohenvoithanhxuan.mp3" loop preload="auto"></audio>
+
+  <script>
+    /* ===== 1. ĐỒNG HỒ & LỊCH THỜI GIAN THỰC ===== */
+    function updateClock() {
+      const now = new Date();
+      const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const mo = String(now.getMonth() + 1).padStart(2, '0');
+      const yyyy = now.getFullYear();
+
+      document.getElementById('clockTime').textContent = `${hh}:${mm}:${ss}`;
+      document.getElementById('clockDate').textContent = `${days[now.getDay()]}, ${dd}/${mo}/${yyyy}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    /* ===== 2. ĐỔI MÀU 4 MÙA ===== */
+    const seasons = [
+      { name: 'Hạ',   icon: '🌊', accent: '#38bdf8', dark: '#0284c7', glow: 'rgba(56, 189, 248, 0.45)',  soft: 'rgba(56, 189, 248, 0.14)' },
+      { name: 'Thu',  icon: '🍁', accent: '#f59e0b', dark: '#d97706', glow: 'rgba(245, 158, 11, 0.45)',  soft: 'rgba(245, 158, 11, 0.14)' },
+      { name: 'Đông', icon: '❄️', accent: '#bae6fd', dark: '#38bdf8', glow: 'rgba(186, 230, 253, 0.50)', soft: 'rgba(186, 230, 253, 0.14)' },
+      { name: 'Xuân', icon: '🌸', accent: '#f472b6', dark: '#db2777', glow: 'rgba(244, 114, 182, 0.45)', soft: 'rgba(244, 114, 182, 0.14)' }
+    ];
+    let currentSeason = 0;
+
+    document.getElementById('seasonBtn').addEventListener('click', () => {
+      currentSeason = (currentSeason + 1) % seasons.length;
+      const s = seasons[currentSeason];
+      const root = document.documentElement;
+      root.style.setProperty('--accent', s.accent);
+      root.style.setProperty('--accent-dark', s.dark);
+      root.style.setProperty('--accent-glow', s.glow);
+      root.style.setProperty('--accent-soft', s.soft);
+      document.getElementById('seasonIcon').textContent = s.icon;
+      document.getElementById('seasonName').textContent = s.name;
+    });
+
+    /* ===== 3. MODAL GAME YÊU THÍCH ===== */
+    const gameData = {
+      wuwa: {
+        name: 'Wuthering Waves',
+        img: 'wuwa.jpg',
+        ingame: 'Nagi',
+        uid: '701867670'
+      },
+      gi: {
+        name: 'Genshin Impact',
+        img: 'gi.jpg',
+        ingame: 'EmQSieuVuon',
+        uid: '873461145'
+      }
+    };
+    let activeUid = '';
+
+    function openGameModal(key) {
+      const g = gameData[key];
+      activeUid = g.uid;
+      document.getElementById('modalImg').src = g.img;
+      document.getElementById('modalTitle').textContent = g.name;
+      document.getElementById('modalIngame').textContent = g.ingame;
+      document.getElementById('modalUid').textContent = g.uid;
+      document.getElementById('copyUidBtn').innerHTML = '<i class="fa-regular fa-copy"></i> Sao chép UID';
+      document.getElementById('gameModal').classList.add('open');
+    }
+
+    function closeGameModal() {
+      document.getElementById('gameModal').classList.remove('open');
+    }
+
+    function closeModalOutside(e) {
+      if (e.target.id === 'gameModal') closeGameModal();
+    }
+
+    function copyUid() {
+      navigator.clipboard.writeText(activeUid).then(() => {
+        const btn = document.getElementById('copyUidBtn');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Đã sao chép UID!';
+        setTimeout(() => {
+          btn.innerHTML = '<i class="fa-regular fa-copy"></i> Sao chép UID';
+        }, 1800);
+      });
+    }
+
+    /* ===== 4. TRÌNH PHÁT NHẠC & MÀN HÌNH CHỜ ===== */
+    const audio = document.getElementById('bgMusic');
+    const overlay = document.getElementById('enterOverlay');
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const discArt = document.getElementById('discArt');
+    const eqBars = document.getElementById('eqBars');
+    const progressBar = document.getElementById('progressBar');
+    const progressFill = document.getElementById('progressFill');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationTimeEl = document.getElementById('durationTime');
+    const volSlider = document.getElementById('volSlider');
+    const volIcon = document.getElementById('volIcon');
+
+    audio.volume = 0.7;
+
+    function formatTime(sec) {
+      if (isNaN(sec)) return '00:00';
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function setPlayingUI(isPlaying) {
+      playIcon.className = isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+      discArt.classList.toggle('playing', isPlaying);
+      eqBars.classList.toggle('playing', isPlaying);
+    }
+
+    // Chạm màn hình chờ -> vào web & tự phát nhạc
+    overlay.addEventListener('click', () => {
+      overlay.classList.add('hidden');
+      audio.play().then(() => setPlayingUI(true)).catch(() => {});
+    });
+
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play().then(() => setPlayingUI(true));
+      } else {
+        audio.pause();
+        setPlayingUI(false);
+      }
+    });
+
+    document.getElementById('rewindBtn').addEventListener('click', () => {
+      audio.currentTime = 0;
+    });
+
+    document.getElementById('forwardBtn').addEventListener('click', () => {
+      if (!isNaN(audio.duration)) {
+        audio.currentTime = Math.min(audio.currentTime + 10, audio.duration);
+      }
+    });
+
+    audio.addEventListener('loadedmetadata', () => {
+      durationTimeEl.textContent = formatTime(audio.duration);
+    });
+
+    audio.addEventListener('timeupdate', () => {
+      currentTimeEl.textContent = formatTime(audio.currentTime);
+      if (audio.duration) {
+        progressFill.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
+      }
+    });
+
+    progressBar.addEventListener('click', (e) => {
+      if (!audio.duration) return;
+      const rect = progressBar.getBoundingClientRect();
+      const ratio = (e.clientX - rect.left) / rect.width;
+      audio.currentTime = ratio * audio.duration;
+    });
+
+    volSlider.addEventListener('input', (e) => {
+      audio.volume = e.target.value;
+      volIcon.className = audio.volume == 0 ? 'fa-solid fa-volume-xmark vol-icon' : 'fa-solid fa-volume-high vol-icon';
+    });
+
+    volIcon.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      volIcon.className = audio.muted ? 'fa-solid fa-volume-xmark vol-icon' : 'fa-solid fa-volume-high vol-icon';
+    });
+
+    /* ===== 5. HIỆU ỨNG HOA NEMOPHILA RƠI NHẸ ===== */
+    const canvas = document.getElementById('nemophila-canvas');
+    const ctx = canvas.getContext('2d');
+    let flowers = [];
+    const FLOWER_COUNT = 22;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function createFlower(startTop = false) {
+      return {
+        x: Math.random() * canvas.width,
+        y: startTop ? -20 : Math.random() * canvas.height,
+        size: 7 + Math.random() * 6,
+        speedY: 0.7 + Math.random() * 0.9,
+        speedX: -0.4 + Math.random() * 0.8,
+        angle: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 0.025,
+        swayOffset: Math.random() * Math.PI * 2,
+        opacity: 0.65 + Math.random() * 0.35
+      };
+    }
+
+    for (let i = 0; i < FLOWER_COUNT; i++) {
+      flowers.push(createFlower(false));
+    }
+
+    function drawNemophila(f) {
+      ctx.save();
+      ctx.translate(f.x, f.y);
+      ctx.rotate(f.angle);
+      ctx.globalAlpha = f.opacity;
+
+      // Vẽ 5 cánh hoa xanh Nemophila
+      for (let i = 0; i < 5; i++) {
+        ctx.save();
+        ctx.rotate((i * Math.PI * 2) / 5);
+        ctx.beginPath();
+        ctx.ellipse(0, -f.size * 0.65, f.size * 0.45, f.size * 0.62, 0, 0, Math.PI * 2);
+        const grad = ctx.createRadialGradient(0, -f.size * 0.2, 1, 0, -f.size * 0.65, f.size * 0.7);
+        grad.addColorStop(0, '#f0f9ff');
+        grad.addColorStop(0.45, '#7dd3fc');
+        grad.addColorStop(1, '#38bdf8');
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Nhụy trắng tâm hoa
+      ctx.beginPath();
+      ctx.arc(0, 0, f.size * 0.28, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function animateFlowers() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < flowers.length; i++) {
+        const f = flowers[i];
+        f.y += f.speedY;
+        f.x += f.speedX + Math.sin(f.y * 0.015 + f.swayOffset) * 0.35;
+        f.angle += f.spin;
+
+        if (f.y > canvas.height + 25) {
+          flowers[i] = createFlower(true);
+        }
+        drawNemophila(f);
+      }
+      requestAnimationFrame(animateFlowers);
+    }
+    animateFlowers();
+  </script>
 </body>
 </html>
