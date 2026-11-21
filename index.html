@@ -13,13 +13,18 @@
       justify-content: center;
       align-items: center;
       background-color: #0f172a;
-      background-image: url('https://i.pinimg.com/736x/2f/68/0f/2f680f41b4840b65f6d9f12dcf386f48.jpg');
-      background-position: center;
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
       color: #fff;
       padding: 20px;
+      overflow-x: hidden;
+    }
+    .bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
     }
     .card {
       width: 100%;
@@ -63,6 +68,10 @@
   </style>
 </head>
 <body>
+  <video class="bg-video" autoplay muted loop playsinline poster="https://i.pinimg.com/736x/2f/68/0f/2f680f41b4840b65f6d9f12dcf386f48.jpg">
+    <source src="YTSave.to_YouTube_Media_ExEyb-BaFyo_Qingxiao-entrance-cutscene-Full-HD-60FPS-Wuthering-waves-3-5_002_720p%20(online-video-cutter.com).mp4" type="video/mp4">
+  </video>
+
   <div class="card">
     <img src="https://i.pinimg.com/736x/e8/34/af/e834afd04cdcf498637487391b932c33.jpg" referrerpolicy="no-referrer" alt="Avatar" class="avatar">
     <h1>Nagisa</h1>
