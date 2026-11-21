@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bio</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* Thay link ảnh nền của bạn vào đây */
+      background: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1920') center/cover no-repeat fixed;
+      color: #fff;
+      padding: 20px;
+    }
+    .card {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(20, 20, 30, 0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255, 255, 255, 0.6);
+      margin-bottom: 14px;
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 6px; }
+    .bio { font-size: 0.9rem; color: #d1d5db; margin-bottom: 24px; }
+    .links { display: flex; flex-direction: column; gap: 12px; }
+    .btn {
+      display: block;
+      padding: 13px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.25s;
+    }
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <!-- Thay link ảnh đại diện -->
+    <img src="https://i.pravatar.cc/200" alt="Avatar" class="avatar">
+    <h1>Tên Của Bạn</h1>
+    <p class="bio">Mô tả ngắn về bạn ở đây ✨</p>
+
+    <div class="links">
+      <a href="https://facebook.com" target="_blank" class="btn">Facebook</a>
+      <a href="https://tiktok.com" target="_blank" class="btn">TikTok</a>
+      <a href="https://discord.com" target="_blank" class="btn">Discord</a>
+      <a href="https://instagram.com" target="_blank" class="btn">Instagram</a>
+    </div>
+  </div>
+</body>
+</html>
