@@ -35,14 +35,14 @@
       overflow-x: hidden;
     }
 
-    /* Video nền tối ưu cho cả PC & điện thoại */
+    /* Video nền tối ưu GPU chống lag */
     .bg-video {
       position: fixed;
       inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      z-index: 0;
+      z-index: -2;
       transform: translateZ(0);
     }
 
@@ -56,7 +56,7 @@
       z-index: 10;
     }
 
-    /* Màn hình chờ để mở khóa tự động phát nhạc & video */
+    /* Màn hình chờ để mở khóa tự động phát nhạc */
     .enter-overlay {
       position: fixed;
       inset: 0;
@@ -100,13 +100,12 @@
       50% { transform: scale(1.04); }
     }
 
-    /* Khung Bio chính có ảnh nền qing 916 mờ */
+    /* Khung Bio chính */
     .card {
       position: relative;
-      overflow: hidden;
       width: 100%;
       max-width: 440px;
-      background: rgba(13, 18, 30, 0.82);
+      background: rgba(13, 18, 30, 0.78);
       border: 2px solid var(--accent);
       border-radius: 26px;
       padding: 22px 22px 26px;
@@ -114,19 +113,6 @@
       box-shadow: 0 0 28px var(--accent-glow), 0 12px 36px rgba(0, 0, 0, 0.55);
       transition: border-color 0.4s ease, box-shadow 0.4s ease;
       z-index: 2;
-    }
-
-    /* Lớp ảnh qing 916 mờ bên trong khung */
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: url('qing%20916.jpg') center/cover no-repeat;
-      opacity: 0.35;
-      filter: blur(2px);
-      transform: scale(1.06);
-      z-index: -1;
-      pointer-events: none;
     }
 
     /* Thanh trên cùng: Đồng hồ & Nút đổi 4 mùa */
@@ -140,8 +126,8 @@
 
     .clock-box {
       text-align: left;
-      background: rgba(15, 23, 42, 0.55);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       padding: 6px 12px;
       border-radius: 12px;
     }
@@ -202,7 +188,7 @@
 
     .bio {
       font-size: 0.88rem;
-      color: #e2e8f0;
+      color: #d1d5db;
       margin-bottom: 20px;
       line-height: 1.5;
     }
@@ -215,7 +201,7 @@
       font-size: 0.74rem;
       font-weight: 700;
       letter-spacing: 1px;
-      color: #cbd5e1;
+      color: #94a3b8;
       text-transform: uppercase;
       margin: 18px 0 10px;
       text-align: left;
@@ -229,7 +215,7 @@
     }
 
     .game-card {
-      background: rgba(15, 23, 42, 0.78);
+      background: rgba(20, 29, 46, 0.85);
       border: 1.5px solid var(--accent);
       border-radius: 16px;
       padding: 14px 10px;
@@ -293,26 +279,26 @@
 
     .btn-tiktok {
       color: #ff3b6b;
-      background: rgba(255, 59, 107, 0.18);
+      background: rgba(255, 59, 107, 0.16);
       border: 1.5px solid #ff3b6b;
     }
 
     .btn-discord {
       color: #7c8cff;
-      background: rgba(88, 101, 242, 0.2);
+      background: rgba(88, 101, 242, 0.18);
       border: 1.5px solid #6b7cff;
     }
 
     .btn-purple {
       color: #d946ef;
-      background: rgba(217, 70, 239, 0.18);
+      background: rgba(217, 70, 239, 0.16);
       border: 1.5px solid #d946ef;
     }
 
     /* Trình phát nhạc (tông xanh nước biển) */
     .music-player {
       margin-top: 18px;
-      background: rgba(14, 22, 36, 0.88);
+      background: rgba(14, 22, 36, 0.9);
       border: 1.5px solid #38bdf8;
       border-radius: 18px;
       padding: 12px 14px;
@@ -603,14 +589,14 @@
 </head>
 <body>
   <!-- Video nền -->
-  <video id="bgVideo" class="bg-video" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="https://i.pinimg.com/736x/2f/68/0f/2f680f41b4840b65f6d9f12dcf386f48.jpg">
+  <video class="bg-video" autoplay muted loop playsinline poster="https://i.pinimg.com/736x/2f/68/0f/2f680f41b4840b65f6d9f12dcf386f48.jpg">
     <source src="YTSave.to_YouTube_Media_ExEyb-BaFyo_Qingxiao-entrance-cutscene-Full-HD-60FPS-Wuthering-waves-3-5_002_720p%20(online-video-cutter.com).mp4" type="video/mp4">
   </video>
 
   <!-- Canvas hoa Nemophila rơi -->
   <canvas id="nemophila-canvas"></canvas>
 
-  <!-- Màn hình chạm để mở nhạc & video -->
+  <!-- Màn hình chạm để mở nhạc -->
   <div class="enter-overlay" id="enterOverlay">
     <div class="enter-box">✨ Chạm để tiếp tục ✨</div>
     <div class="enter-sub">Nhấn bất kỳ đâu để vào trang & phát nhạc</div>
@@ -816,7 +802,7 @@
       });
     }
 
-    /* ===== 4. TRÌNH PHÁT NHẠC, VIDEO & MÀN HÌNH CHỜ ===== */
+    /* ===== 4. TRÌNH PHÁT NHẠC & MÀN HÌNH CHỜ ===== */
     const audio = document.getElementById('bgMusic');
     const overlay = document.getElementById('enterOverlay');
     const playBtn = document.getElementById('playBtn');
@@ -845,15 +831,10 @@
       eqBars.classList.toggle('playing', isPlaying);
     }
 
-    // Chạm màn hình chờ -> vào web, phát nhạc & kích chạy video nền trên điện thoại
+    // Chạm màn hình chờ -> vào web & tự phát nhạc
     overlay.addEventListener('click', () => {
       overlay.classList.add('hidden');
       audio.play().then(() => setPlayingUI(true)).catch(() => {});
-      const bgVideo = document.getElementById('bgVideo');
-      if (bgVideo) {
-        bgVideo.muted = true;
-        bgVideo.play().catch(() => {});
-      }
     });
 
     playBtn.addEventListener('click', () => {
